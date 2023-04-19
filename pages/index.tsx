@@ -1,10 +1,63 @@
 import Head from 'next/head';
 import Image from 'next/image';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 // Assets
 import Logo from '@/public/assets/images/logo.png';
 
+// Types
+// Hooks
+import useDebounce from '@/hooks/useDebounce';
+
 export default function Home() {
+  const [value, setValue] = useState<string>('');
+  const debouncedValue = useDebounce<string>(value, 500);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  };
+
+  const token =
+    'BQDwQ96oQv98bwK8qhIKSEA6PzjB0Uuin-bTrexpuz5mHKlPBWk05eugpyOLe2yQdoizguh8EQWU3aKdKuAJx6ijP5aRz6yI47K4xnvthK4skyILRxGz';
+  const fetchWebApi = async (
+    endpoint: string,
+    method: string,
+    body?: object
+  ) => {
+    const res = await fetch(`https://api.spotify.com/${endpoint}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      method,
+      body:
+        method !== 'GET' && method !== 'HEAD'
+          ? JSON.stringify(body)
+          : undefined,
+    });
+    return await res.json();
+  };
+
+  const getSearchResults = async (query: string) => {
+    // Endpoint reference : https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
+    return (
+      await fetchWebApi(
+        `v1/search?q=${encodeURIComponent(query)}&type=track`,
+        'GET'
+      )
+    ).tracks;
+  };
+
+  useEffect(() => {
+    if (debouncedValue) {
+      const fetchData = async () => {
+        const searchResults = await getSearchResults(debouncedValue);
+        // eslint-disable-next-line no-console
+        console.log(searchResults.items);
+      };
+      fetchData();
+    }
+  }, [debouncedValue]);
+
   return (
     <>
       <Head>
@@ -31,10 +84,13 @@ export default function Home() {
             <div className="ml-auto w-full max-w-md">
               <input
                 type="text"
-                id="first_name"
+                id="song_name"
                 className="block w-full rounded-lg border border-spotify-black/20 bg-white p-2.5 text-xl text-spotify-black/80 outline-none focus:border-spotify-black/80 focus:ring-2 focus:ring-spotify-black/40"
-                placeholder="John"
+                placeholder="Enter a song"
                 required
+                value={value}
+                onChange={handleChange}
+                aria-label="Enter a song's name to search for its mood"
               />
             </div>
             <button
