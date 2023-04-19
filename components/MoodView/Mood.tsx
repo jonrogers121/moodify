@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react';
 
 enum moods {
   CALM = 'calm',
@@ -6,44 +6,47 @@ enum moods {
   ENERGETIC = 'energetic',
   EXUBERENT = 'exhuberent',
   HAPPY = 'happy',
-  SAD = 'sad'
+  SAD = 'sad',
 }
 
 interface IMood {
-  mood: moods
+  mood: moods;
 }
 
-export const Mood = ({mood}: IMood) => {
-  const [songMood, setSongMood] = useState<string | undefined>()
-  const [emoji, setEmoji] = useState<string | undefined>()
+export const Mood = ({ mood }: IMood) => {
+  const [songMood, setSongMood] = useState<string | undefined>();
+  const [emoji, setEmoji] = useState<string | undefined>();
 
   useEffect(() => {
     if (mood === moods.CALM) {
-      setSongMood('Calm')
-      setEmoji('😌')
+      setSongMood('Calm');
+      setEmoji('😌');
     }
     if (mood === moods.DEPRESSION) {
-      setSongMood('Depression')
-      setEmoji('😩')
+      setSongMood('Depression');
+      setEmoji('😩');
     }
     if (mood === moods.ENERGETIC) {
-      setSongMood('Energetic')
-      setEmoji('🤗')
+      setSongMood('Energetic');
+      setEmoji('🤗');
     }
     if (mood === moods.HAPPY) {
-      setSongMood('Happy')
-      setEmoji('😁')
+      setSongMood('Happy');
+      setEmoji('😁');
     }
     if (mood === moods.EXUBERENT) {
-      setSongMood('Exhuberent')
-      setEmoji('🤩')
+      setSongMood('Exhuberent');
+      setEmoji('🤩');
     }
     if (mood === moods.SAD) {
-      setSongMood('Sad')
-      setEmoji('😥')
+      setSongMood('Sad');
+      setEmoji('😥');
     }
-  }, [mood])
+  }, [mood]);
   return (
-    <p>{songMood}</p>
-  )
-}
+    <>
+      <p>{songMood}</p>
+      <p>{emoji}</p>
+    </>
+  );
+};
